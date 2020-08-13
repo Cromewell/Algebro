@@ -1,0 +1,11 @@
+> Seid willkommen edler Ritter!
+Sicherlich seid Ihr muede nach diesem langen Marsch...
+Unter welchen Namen darf ich Euch in die Unterkunft buchen?
+$getInput$
+$renamePly$
+> Wie Sie wuenschen. Ich buche Sie unter dem Namen $plyName$
+
+$clear$
+> Welches Level soll gestartet werden? (1,...)
+$getInput$
+$startLevel$

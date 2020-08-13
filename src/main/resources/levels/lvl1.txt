@@ -1,0 +1,33 @@
+> $plyName$ erwacht am naechsten Tag. Die Nacht war erholsam.
+Was wohl der Tag bringen wuerde?
+
+> Diese Frage wurde auch alsbald beantwortet,
+als die Tuer aufgerissen wurde und sich
+ein haemisch grinsender Gnom vor ihm befand.
+
+$clear$
+> "Toeten, schlachten und ermorden - diese Dinge mach' ich gern.
+ Im tiefsten Schlunde muss ein jeder harren.
+ Wie du sie retten kannst wirst du nun lern':
+ Alte Formeln werden dich halten zum Narren,
+ Denn die zu Beweisen es fuer dich gilt.
+ Nutze Logik und deduziere scharf wie ein Degen,
+ Dann wird die Strafe allzu mild.
+ Ist die Antwort falsch hingegen,
+ So werd ich das Opfer in Stuecke saegen!", sprach der Gnom.
+
+> "Sage mir, junger Recke", setzte er fort,
+"kannst du mir folgendes beweisen?
+'Sei R ein Ring. Seien a,b in R.
+Dann gilt stets 0a=0 und (-a)b=-(ab).'"
+
+$clear$
+> Hast du das Raetsel geloest, so vergleiche deine Bemuehungen
+mit der folgenden Musterloesung.
+
+$showSolution$
+------------------------------------------------------------------------------
+> Denkst du, deine Loesung ist korrekt, so druecke J,
+denkst du, sie ist falsch, so druecke N.
+
+$isCorrect$

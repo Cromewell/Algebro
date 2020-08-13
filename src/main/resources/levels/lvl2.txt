@@ -1,0 +1,32 @@
+> Im letzten Abenteuer hatte $plyName$ Bekanntschaft
+  mit dem Gnom gemacht. Wie kann es bloss so grausame Wesen
+  Geben?
+
+> Es war klar, dass dies nicht das letzte mal war,
+  dass der Gnom Raetsel stellen wuerde, denn er hatte
+  noch etliche Gefangene in seiner Gewalt!
+
+$clear$
+> Vier Stunden spaeter war es soweit, und der Gnom schickte
+  per Brief das schon erwartete Raetsel. Es war kein ge-
+  woehnlicher Brief, denn dort stand unter anderem:
+  "Die Loesung soll vom Blute des Helden gefertigt sein,
+   denn ansonsten ist dies ein Tadelgrund, den das Opfer
+   zahlt mit seinem Bein!"...
+
+> Es hiess weiter: "Das Raetsel ist von einfacher Natur. Es
+  lautet wie folgt:"
+
+$showTask$
+> "Viel Glueck, haha!", prustete der Gnom.
+
+$clear$
+> Hast du das Raetsel geloest, so vergleiche deine Bemuehungen
+mit der folgenden Musterloesung.
+
+$showSolution$
+------------------------------------------------------------------------------
+> Denkst du, deine Loesung ist korrekt, so druecke J,
+denkst du, sie ist falsch, so druecke N.
+
+$isCorrect$
