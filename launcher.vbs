@@ -1,1 +1,0 @@
-CreateObject("Wscript.Shell").Run "C:\Users\jrlac\IdeaProjects\Algebro\target\image\bin\start.bat",0,True
