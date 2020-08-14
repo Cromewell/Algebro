@@ -1,1 +1,1 @@
-CreateObject("Wscript.Shell").Run "start.bat",0,True
+CreateObject("Wscript.Shell").Run "path/to/start.bat",0,True

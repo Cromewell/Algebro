@@ -34,6 +34,7 @@ public class MainApp extends Application {
     private boolean continueWriting = true;
     private boolean waitingForInput = false;
     private int linesToSkip = 0;
+    private int readLines = 0;
     private String currentLvl;
     private String lastInputText;
     private Stage mainStage;
@@ -113,9 +114,7 @@ public class MainApp extends Application {
 
     //skip for skipping lines
     private void startLevel(String lvl, int skip) {
-        System.out.println("Lines to skip: " + skip);
         BufferedReader reader;
-        int readLines = 0;
         try {
             InputStream levelStream = MainApp.class.getClassLoader().getResourceAsStream("levels/" + lvl + ".txt");
             if (levelStream == null) throw new IOException();
@@ -128,147 +127,151 @@ public class MainApp extends Application {
             }
             while (reader.ready()) {
                 String line = reader.readLine();
-                if (line.contains(Keywords.PLAYER_NAME)) {
-                    line = line.replaceAll("\\$plyName\\$", ply.getName());
-                }
-                if (line.equals(Keywords.WAIT_FOR_OK)) {
-                    console.printLine("Drücke OK um fortzufahren...");
-                    console.newLine();
-                    continueWriting = true;
-                    linesToSkip += readLines + 1;
-                    break;
-                }
-
-                if (line.equals(Keywords.CLEAR_SCREEN)) {
-                    console.clear();
-                    line = "";
-                }
-
-                if (line.equals(Keywords.SHOW_SOLUTION)) {
-                    System.out.println("SHOW: sol_" + lvl + ".pdf");
-                    InputStream fileStream = MainApp.class.getClassLoader().getResourceAsStream("solutions/sol_" + lvl + ".pdf");
-                    Path tempOutput = Files.createTempFile("temp_sol", ".pdf");
-                    tempOutput.toFile().deleteOnExit();
-                    try (InputStream is = fileStream) {
-                        if (is == null) throw new IOException();
-                        Files.copy(is, tempOutput, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ex) {
-                        System.out.println("Error while creating temporary solution file.");
-                    }
-                    Desktop.getDesktop().open(tempOutput.toFile());
-                    line = "";
-                }
-                if (line.equals(Keywords.GET_INPUT)) {
-                    console.printLine("Erwarte Eingabe...");
-                    continueWriting = false;
-                    waitingForInput = true;
-                    linesToSkip += readLines + 1;
-                    break;
-                }
-
-                if (line.equals(Keywords.RENAME_PLAYER)) {
-                    ply.setName(lastInputText);
-                    line = "";
-                }
-
-                if (line.equals(Keywords.START_LEVEL)) {
-                    line = "";
-                    int chosenLvl;
-                    try {
-                        chosenLvl = Integer.parseInt(lastInputText);
-                        System.out.println("LOAD LEVEL: " + chosenLvl);
-                        if (EXISTING_LEVELS.contains(chosenLvl)) {
-                            console.printLine("------------------");
-                            console.printLine("Lade Level " + chosenLvl + "...");
-                            console.printLine("------------------");
-                            //simulate loading for 1.5 seconds
-                            Task<Void> sleeper = new Task<>() {
-                                @Override
-                                protected Void call() {
-                                    try {
-                                        Thread.sleep(1500);
-                                    } catch (InterruptedException ignored) {
-                                    }
-                                    return null;
-                                }
-                            };
-                            sleeper.setOnSucceeded(event -> {
-                                console.clear();
-                                linesToSkip = 0;
-                                currentLvl = "lvl" + lastInputText;
-                                startLevel("lvl" + lastInputText, linesToSkip);
-                            });
-                            new Thread(sleeper).start();
-                        } else {
-                            throw new IllegalArgumentException();
-                        }
-                    } catch (IllegalArgumentException ex) {
-                        console.clear();
-                        console.printLine("Level \"" + lastInputText + "\" konnte nicht gefunden werden.");
-                        linesToSkip += readLines - 1;
-                        continueWriting = true;
-                        startLevel(currentLvl, linesToSkip);
-                    }
-                }
-
-                if (line.equals(Keywords.SHOW_TASK)) {
-                    line = "";
-                    Stage taskWindow = new Stage();
-                    taskWindow.initModality(Modality.WINDOW_MODAL);
-                    StackPane root = new StackPane();
-                    InputStream fileStream = MainApp.class.getClassLoader().getResourceAsStream("imgs/lvl2_task.png");
-                    if (fileStream == null) throw new IOException();
-                    ImageView taskView = new ImageView(new Image(fileStream));
-                    root.getChildren().add(taskView);
-                    taskWindow.setScene(new Scene(root, 840, 174));
-                    taskWindow.initOwner(mainStage);
-                    taskWindow.show();
-                }
-
-                if (line.equals(Keywords.ASK_CORRECTNESS)) {
-                    boolean isCorrect;
-                    String in;
-
-                    try {
-                        in = input.getText();
-                        if (in.equals("J") || in.equals("j") || in.equals("N") || in.equals("n")) {
-                            isCorrect = in.equals("J") || in.equals("j");
-                        } else {
-                            throw new IllegalArgumentException();
-                        }
-                    } catch (IllegalArgumentException e) {
-                        console.clear();
-                        console.printLine("J(a) oder N(ein)?!");
-                        linesToSkip += readLines;
-                        continueWriting = true;
-                        break;
-
-                    }
-
-                    line = "";
-                    if (!lvl.equals("intro")) {
-                        console.clear();
-                        exitLevel(Integer.parseInt(lvl.substring(3)), isCorrect);
-                    }
-                }
-                readLines++;
-                console.printLine(line);
+                String toDisplay = handleInput(line, lvl);
+                if (toDisplay.equals("$break$")) break;
+                console.printLine(toDisplay);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Level " + lvl + " wurde beendet.");
+        readLines = 0;
     }
 
-    private String handleInput(String line) {
-        return "";
+    private String handleInput(String line, String lvl) {
+        if (line.contains(Keywords.PLAYER_NAME)) {
+            line = line.replaceAll("\\$plyName\\$", ply.getName());
+        }
+        if (line.equals(Keywords.WAIT_FOR_OK)) {
+            console.printLine("Drücke OK um fortzufahren...");
+            console.newLine();
+            continueWriting = true;
+            linesToSkip += readLines + 1;
+            return "$break$";
+        }
+
+        if (line.equals(Keywords.CLEAR_SCREEN)) {
+            console.clear();
+            line = "";
+        }
+
+        if (line.equals(Keywords.SHOW_SOLUTION)) {
+            try (InputStream is = MainApp.class.getClassLoader().getResourceAsStream("solutions/sol_" + lvl + ".pdf")) {
+                Path tempOutput = Files.createTempFile("temp_sol", ".pdf");
+                tempOutput.toFile().deleteOnExit();
+                if (is == null) throw new IOException();
+                Files.copy(is, tempOutput, StandardCopyOption.REPLACE_EXISTING);
+                Desktop.getDesktop().open(tempOutput.toFile());
+            } catch (IOException ex) {
+                System.out.println("Error while creating temporary solution file.");
+            }
+            line = "";
+        }
+        if (line.equals(Keywords.GET_INPUT)) {
+            console.printLine("Erwarte Eingabe...");
+            continueWriting = false;
+            waitingForInput = true;
+            linesToSkip += readLines + 1;
+            return "$break$";
+        }
+
+        if (line.equals(Keywords.RENAME_PLAYER)) {
+            ply.setName(lastInputText);
+            line = "";
+        }
+
+        if (line.equals(Keywords.START_LEVEL)) {
+            line = "";
+            int chosenLvl;
+            try {
+                chosenLvl = Integer.parseInt(lastInputText);
+                if (EXISTING_LEVELS.contains(chosenLvl)) {
+                    console.printLine("------------------");
+                    console.printLine("Lade Level " + chosenLvl + "...");
+                    console.printLine("------------------");
+                    //simulate loading for 1.5 seconds
+                    Task<Void> sleeper = new Task<>() {
+                        @Override
+                        protected Void call() {
+                            try {
+                                Thread.sleep(1500);
+                            } catch (InterruptedException ignored) {
+                            }
+                            return null;
+                        }
+                    };
+                    sleeper.setOnSucceeded(event -> {
+                        console.clear();
+                        linesToSkip = 0;
+                        currentLvl = "lvl" + lastInputText;
+                        startLevel("lvl" + lastInputText, linesToSkip);
+                    });
+                    new Thread(sleeper).start();
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } catch (IllegalArgumentException ex) {
+                console.clear();
+                console.printLine("Level \"" + lastInputText + "\" konnte nicht gefunden werden.");
+                linesToSkip += readLines - 1;
+                continueWriting = true;
+                startLevel(currentLvl, linesToSkip);
+            }
+        }
+
+        if (line.equals(Keywords.SHOW_TASK)) {
+            line = "";
+            Stage taskWindow = new Stage();
+            taskWindow.initModality(Modality.WINDOW_MODAL);
+            StackPane root = new StackPane();
+            InputStream fileStream = MainApp.class.getClassLoader().getResourceAsStream("imgs/" + lvl + "_task.png");
+            try {
+                if (fileStream == null) throw new IOException();
+                ImageView taskView = new ImageView(new Image(fileStream));
+                root.getChildren().add(taskView);
+                taskWindow.setScene(new Scene(root, 840, 174));
+                taskWindow.initOwner(mainStage);
+                taskWindow.show();
+
+            } catch (IOException e) {
+                System.out.println("Couldn't load imgs/" + lvl + "_task.png");
+            }
+        }
+
+        if (line.equals(Keywords.ASK_CORRECTNESS)) {
+            boolean isCorrect;
+            String in;
+
+            try {
+                in = input.getText();
+                if (in.equals("J") || in.equals("j") || in.equals("N") || in.equals("n")) {
+                    isCorrect = in.equals("J") || in.equals("j");
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } catch (IllegalArgumentException e) {
+                console.clear();
+                console.printLine("J(a) oder N(ein)?!");
+                linesToSkip += readLines;
+                continueWriting = true;
+                return "$break$";
+
+            }
+
+            line = "";
+            if (!lvl.equals("intro")) {
+                console.clear();
+                exitLevel(Integer.parseInt(lvl.substring(3)), isCorrect);
+            }
+        }
+        readLines++;
+        return line;
     }
 
     private void exitLevel(int lvl, boolean isCorrect) {
         if (isCorrect) {
             console.printLine("Die Tat ist vollbracht. Glückwunsch ist geboten!");
             console.printLine("Du erhälst " + lvl * 10 + " XP.");
-            ply.receiceXP(lvl * 10);
+            ply.receiveXP(lvl * 10);
             ply.setLastProblemSolved("Level " + lvl);
             console.printLine("------------------");
             console.printLine("Raetsel gelöst: " + ply.getProblemsSolved());

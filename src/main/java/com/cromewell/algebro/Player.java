@@ -10,13 +10,13 @@ public class Player {
     private String lastProblemSolved = "Nothing yet";
 
 
-    public void receiceXP(int xp) {
+    public void receiveXP(int xp) {
         this.xp += xp;
         if (xpNeededForLvlUp <= this.xp) {
             level += 1;
             this.xp -= xpNeededForLvlUp;
             xpNeededForLvlUp = (level ^ 2) * 10;
-            System.out.println("Du steigst auf Level " + level + " auf!");
+            System.out.println("Level steigt auf " + level);
         }
         problemsSolved += 1;
     }
