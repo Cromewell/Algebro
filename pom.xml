@@ -44,6 +44,9 @@
                 <version>0.0.3</version>
                 <configuration>
                     <compress>2</compress>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                    <stripDebug>true</stripDebug>
                     <launcher>start</launcher>
                     <jlinkZipName>Algebro-packed</jlinkZipName>
                     <mainClass>com.cromewell.algebro.MainApp</mainClass>
