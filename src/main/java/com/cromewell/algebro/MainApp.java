@@ -225,10 +225,11 @@ public class MainApp extends Application {
             StackPane root = new StackPane();
             InputStream fileStream = MainApp.class.getClassLoader().getResourceAsStream("imgs/" + lvl + "_task.png");
             try {
+                //open new window and show task
                 if (fileStream == null) throw new IOException();
                 ImageView taskView = new ImageView(new Image(fileStream));
                 root.getChildren().add(taskView);
-                taskWindow.setScene(new Scene(root, 840, 174));
+                taskWindow.setScene(new Scene(root, taskView.getImage().getWidth(), taskView.getImage().getHeight()));
                 taskWindow.initOwner(mainStage);
                 taskWindow.show();
 
@@ -269,12 +270,12 @@ public class MainApp extends Application {
 
     private void exitLevel(int lvl, boolean isCorrect) {
         if (isCorrect) {
-            console.printLine("Die Tat ist vollbracht. Glückwunsch ist geboten!");
-            console.printLine("Du erhälst " + lvl * 10 + " XP.");
+            console.printLine("Die Tat ist vollbracht. Glueckwunsch ist geboten!");
+            console.printLine("Du erhaelst " + lvl * 10 + " XP.");
             ply.receiveXP(lvl * 10);
             ply.setLastProblemSolved("Level " + lvl);
             console.printLine("------------------");
-            console.printLine("Raetsel gelöst: " + ply.getProblemsSolved());
+            console.printLine("Raetsel geloest: " + ply.getProblemsSolved());
             console.printLine("------------------");
         } else {
             console.clear();
