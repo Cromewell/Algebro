@@ -141,6 +141,27 @@ public class MainApp extends Application {
         if (line.contains(Keywords.PLAYER_NAME)) {
             line = line.replaceAll("\\$plyName\\$", ply.getName());
         }
+
+        if (line.equals(Keywords.EVALUATE_INPUT)) {
+            if (currentLvl.equals("menu")) {
+                if (lastInputText.equals("s")) {
+                    linesToSkip = 21;
+                    startLevel(currentLvl, linesToSkip);
+                    return "$break$";
+                } else if (lastInputText.equals("p")) {
+                    linesToSkip = 15;
+                    startLevel(currentLvl, linesToSkip);
+                    return "$break$";
+                } else {
+                    console.clear();
+                    console.printLine(">> Eingabe nicht valide!");
+                    linesToSkip = 1;
+                    startLevel(currentLvl, linesToSkip);
+                    return "$break$";
+                }
+            }
+        }
+
         if (line.equals(Keywords.WAIT_FOR_OK)) {
             console.printLine("Drücke OK um fortzufahren...");
             console.newLine();
@@ -179,6 +200,11 @@ public class MainApp extends Application {
             line = "";
         }
 
+        if (line.equals(Keywords.RETURN_TO_TAVERN)) {
+            line = "";
+            initLevel("menu");
+        }
+
         if (line.equals(Keywords.START_LEVEL)) {
             line = "";
             int chosenLvl;
@@ -201,9 +227,7 @@ public class MainApp extends Application {
                     };
                     sleeper.setOnSucceeded(event -> {
                         console.clear();
-                        linesToSkip = 0;
-                        currentLvl = "lvl" + lastInputText;
-                        startLevel("lvl" + lastInputText, linesToSkip);
+                        initLevel("lvl" + lastInputText);
                     });
                     new Thread(sleeper).start();
                 } else {
@@ -238,12 +262,42 @@ public class MainApp extends Application {
             }
         }
 
+        if (line.equals(Keywords.LIST_SOLVED_LEVELS)) {
+            console.clear();
+            line = "";
+            console.printLine("----------------------------------------");
+            console.printLine("Bisher geloeste Raetsel sind:");
+            console.newLine();
+            for (String problemName : ply.getProblemsSolved()) {
+                console.printLine("->> " + problemName);
+                console.newLine();
+            }
+            console.printLine("----------------------------------------");
+        }
+
+        if (line.equals(Keywords.NEW_LINE)) {
+            line = "";
+            console.newLine();
+        }
+
+        if (line.equals(Keywords.GIVE_XP)) {
+            line = "";
+            int level = Integer.parseInt(ply.getProblemsSolved().get(ply.getProblemsSolved().size() - 1).substring(6));
+            console.printLine("Du erhaelst " + level * 10 + " XP.");
+            if (level * 10 >= ply.getXpNeededForLvlUp()) {
+                console.printLine("Du erreichst Level " + (ply.getLevel() + 1) + "!");
+                console.newLine();
+            }
+            ply.receiveXP(level * 10);
+        }
+
         if (line.equals(Keywords.ASK_CORRECTNESS)) {
             boolean isCorrect;
             String in;
 
             try {
                 in = input.getText();
+                input.setText("");
                 if (in.equals("J") || in.equals("j") || in.equals("N") || in.equals("n")) {
                     isCorrect = in.equals("J") || in.equals("j");
                 } else {
@@ -270,21 +324,23 @@ public class MainApp extends Application {
 
     private void exitLevel(int lvl, boolean isCorrect) {
         if (isCorrect) {
-            console.printLine("Die Tat ist vollbracht. Glueckwunsch ist geboten!");
-            console.printLine("Du erhaelst " + lvl * 10 + " XP.");
-            ply.receiveXP(lvl * 10);
-            ply.setLastProblemSolved("Level " + lvl);
-            console.printLine("------------------");
-            console.printLine("Raetsel geloest: " + ply.getProblemsSolved());
-            console.printLine("------------------");
+            ply.addSolvedProblem("Level " + lvl);
+            initLevel("success");
         } else {
             console.clear();
             console.printLine("Zu schade...Ein Leben muss also dahin schwinden. Hahaha!");
         }
     }
 
+    private void initLevel(String level) {
+        console.clear();
+        currentLvl = level;
+        readLines = 0;
+        linesToSkip = 0;
+        startLevel(currentLvl, linesToSkip);
+    }
+
     private void startIntro() {
-        currentLvl = "intro";
-        startLevel(currentLvl, 0);
+        initLevel("intro");
     }
 }

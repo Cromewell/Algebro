@@ -1,0 +1,25 @@
+Du befindest dich momentan in der Taverne.
+Was willst machen?
+$newLine$
+__________________________
+|
+| (s) Bisher geloeste Level
+| (p) Starte ein Level
+|__________________________
+$newLine$
+$getInput$
+$evaluateInput$
+
+
+
+//if input is 'p'
+$clear$
+Welches Level soll geladen werden?
+$getInput$
+$startLevel$
+
+//if input is 's'
+$clear$
+$listSolvedLevels$
+
+$returnToTavern$

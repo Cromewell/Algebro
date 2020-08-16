@@ -1,13 +1,14 @@
 package com.cromewell.algebro;
 
+import java.util.ArrayList;
+
 public class Player {
 
     private String name = "emptiness o.o";
     private int level = 1;
     private int xp = 0;
     private int xpNeededForLvlUp = 10;
-    private int problemsSolved = 0;
-    private String lastProblemSolved = "Nothing yet";
+    private ArrayList<String> problemsSolved = new ArrayList<>();
 
 
     public void receiveXP(int xp) {
@@ -16,17 +17,15 @@ public class Player {
             level += 1;
             this.xp -= xpNeededForLvlUp;
             xpNeededForLvlUp = (level ^ 2) * 10;
-            System.out.println("Level steigt auf " + level);
         }
-        problemsSolved += 1;
     }
 
-    public int getProblemsSolved() {
+    public ArrayList<String> getProblemsSolved() {
         return problemsSolved;
     }
 
-    public void setProblemsSolved(int problemsSolved) {
-        this.problemsSolved = problemsSolved;
+    public void addSolvedProblem(String problem) {
+        problemsSolved.add(problem);
     }
 
     public int getXp() {
@@ -51,10 +50,6 @@ public class Player {
 
     public String getName() {
         return name;
-    }
-
-    public void setLastProblemSolved(String lastProblemSolved) {
-        this.lastProblemSolved = lastProblemSolved;
     }
 
     public void setName(String name) {

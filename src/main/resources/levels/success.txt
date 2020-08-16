@@ -1,0 +1,7 @@
+Die Tat ist vollbracht. Glueckwunsch ist geboten!
+$giveXP$
+
+$listSolvedLevels$
+
+Gehe in die Taverne...
+$returnToTavern$
