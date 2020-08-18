@@ -61,9 +61,6 @@ public class MainApp extends Application {
         output.setDisable(true);
         output.setOpacity(1);
 
-        //enable auto scrolling
-        output.textProperty().addListener((observableValue, s, t1) -> output.setScrollTop(Double.MAX_VALUE));
-
         //setting the text area bg color to black and text color to ice blue
         output.setStyle("-fx-background-color: #2E2E2E; -fx-control-inner-background: #2E2E2E; -fx-text-fill: #00FFFF;");
 
@@ -80,6 +77,9 @@ public class MainApp extends Application {
 
         Button ok = new Button("OK");
         ok.setOnAction(e -> {
+            if (console.getWriter().isWriting()) {
+                return;
+            }
             if (waitingForInput) {
                 lastInputText = input.getText();
                 waitingForInput = false;
@@ -142,24 +142,45 @@ public class MainApp extends Application {
             line = line.replaceAll("\\$plyName\\$", ply.getName());
         }
 
+        if(line.equals(Keywords.END)){
+            return "$break$";
+        }
+
         if (line.equals(Keywords.EVALUATE_INPUT)) {
             if (currentLvl.equals("menu")) {
-                if (lastInputText.equals("s")) {
-                    linesToSkip = 21;
-                    startLevel(currentLvl, linesToSkip);
-                    return "$break$";
-                } else if (lastInputText.equals("p")) {
-                    linesToSkip = 15;
-                    startLevel(currentLvl, linesToSkip);
-                    return "$break$";
-                } else {
-                    console.clear();
-                    console.printLine(">> Eingabe nicht valide!");
-                    linesToSkip = 1;
-                    startLevel(currentLvl, linesToSkip);
-                    return "$break$";
+                switch (lastInputText) {
+                    case "s":
+                        linesToSkip = 22;
+                        startLevel(currentLvl, linesToSkip);
+                        return "$break$";
+                    case "p":
+                        linesToSkip = 15;
+                        startLevel(currentLvl, linesToSkip);
+                        return "$break$";
+                    case "t":
+                        linesToSkip = 29;
+                        startLevel(currentLvl, linesToSkip);
+                        return "$break$";
+                    default:
+                        console.clear();
+                        console.printLine(">> Eingabe nicht valide!");
+                        linesToSkip = 1;
+                        startLevel(currentLvl, linesToSkip);
+                        return "$break$";
                 }
             }
+        }
+
+        if (line.equals(Keywords.SET_TEXT_SPEED)) {
+            line = "";
+            int speed;
+            try{
+                speed = Integer.parseInt(lastInputText);
+            } catch (NumberFormatException nfe){
+                console.printLine("Eingabe ungültig. Setze Textgeschwindigkeit zu DEFAULT ("+Writer.DEFAULT_TEXT_SPEED+").");
+                speed = Writer.DEFAULT_TEXT_SPEED;
+            }
+            console.getWriter().setTextSpeed(speed);
         }
 
         if (line.equals(Keywords.WAIT_FOR_OK)) {
@@ -211,9 +232,7 @@ public class MainApp extends Application {
             try {
                 chosenLvl = Integer.parseInt(lastInputText);
                 if (EXISTING_LEVELS.contains(chosenLvl)) {
-                    console.printLine("------------------");
-                    console.printLine("Lade Level " + chosenLvl + "...");
-                    console.printLine("------------------");
+                    console.printLine("Lade Level " + chosenLvl + ".......................");
                     //simulate loading for 1.5 seconds
                     Task<Void> sleeper = new Task<>() {
                         @Override

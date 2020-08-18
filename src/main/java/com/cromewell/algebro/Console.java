@@ -4,27 +4,29 @@ import javafx.scene.control.TextArea;
 
 public class Console {
     public static final int WIDTH = 800;
-    public static final int Height = 420;
-    private TextArea console;
+    public static final int Height = 440;
+    private final TextArea console;
+    private final Writer writer;
 
     public Console(TextArea console) {
         this.console = console;
+        writer = new Writer(console);
+        new Thread(writer).start();
     }
 
     public void printLine(String s) {
-        if (console.getText().equals("")) {
-            console.setText(s);
-        } else {
-            console.setText(console.getText() + "\n" + s);
-        }
-        console.appendText(""); //for auto scrolling listener. Set text sets scroll to 0.
+        writer.add(s);
     }
 
     public void newLine() {
-        console.setText(console.getText() + "\n");
+        writer.add("\n");
     }
 
     public void clear() {
-        console.setText("");
+        writer.add("$clear$");
+    }
+
+    public Writer getWriter() {
+        return writer;
     }
 }

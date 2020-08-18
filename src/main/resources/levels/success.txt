@@ -3,5 +3,5 @@ $giveXP$
 
 $listSolvedLevels$
 
-Gehe in die Taverne...
+Gehe in die Taverne..........
 $returnToTavern$

@@ -1,25 +1,35 @@
 Du befindest dich momentan in der Taverne.
 Was willst machen?
 $newLine$
-__________________________
-|
-| (s) Bisher geloeste Level
-| (p) Starte ein Level
-|__________________________
+------------------------------------------
+ (s) Bisher geloeste Level
+ (p) Starte ein Level
+ (t) Setze Textgeschwindigkeit
+------------------------------------------
 $newLine$
 $getInput$
 $evaluateInput$
 
 
 
-//if input is 'p'
+//if input is 'p' (play). this should be on line 15
 $clear$
 Welches Level soll geladen werden?
 $getInput$
 $startLevel$
+$end$
 
-//if input is 's'
+//if input is 's' (show already solved levels). this should be on line 22
 $clear$
 $listSolvedLevels$
 
 $returnToTavern$
+$end$
+
+//if input is 't' (set text speed). this should be on line 29
+$clear$
+Gebe den gewüschten Abstand zwischen den Zeichen in Millisekunden an.
+$getInput$
+$setTextSpeed$
+$returnToTavern$
+$end$

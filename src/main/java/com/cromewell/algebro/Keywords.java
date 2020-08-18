@@ -15,4 +15,6 @@ public class Keywords {
     public static final String RETURN_TO_TAVERN = "$returnToTavern$";
     public static final String NEW_LINE = "$newLine$";
     public static final String EVALUATE_INPUT = "$evaluateInput$";
+    public static final String SET_TEXT_SPEED = "$setTextSpeed$";
+    public static final String END = "$end$";
 }
