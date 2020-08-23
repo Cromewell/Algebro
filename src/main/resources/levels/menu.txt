@@ -2,14 +2,14 @@ Du befindest dich momentan in der Taverne.
 Was willst machen?
 $newLine$
 ------------------------------------------
- (s) Bisher geloeste Level
+ (n) Beginne neues Spiel
  (p) Starte ein Level
+ (s) Bisher geloeste Level
  (t) Setze Textgeschwindigkeit
 ------------------------------------------
 $newLine$
 $getInput$
 $evaluateInput$
-
 
 
 //if input is 'p' (play). this should be on line 15

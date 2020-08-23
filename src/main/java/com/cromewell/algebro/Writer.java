@@ -16,7 +16,7 @@ public class Writer implements Runnable {
     private final ArrayList<String> toWrite = new ArrayList<>();
     private boolean isWriting;
     private int textSpeed;
-    public static final int DEFAULT_TEXT_SPEED = 15; //15
+    public static final int DEFAULT_TEXT_SPEED = 5; //30
 
     public Writer(TextArea console) {
         this.console = console;

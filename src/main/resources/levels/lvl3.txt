@@ -1,0 +1,36 @@
+> Nun ist es $plyName$ zwei Male gelungen, die boesen
+  Absichten des Gnoms zu vereiteln. Doch wuerde dies
+  so bleiben? $plyName$ fragte sich, ob sein Scharfsinn
+  genuegen wuerde, um auch das naechste Leben zu retten.
+
+> Ein dumpfes Gefuehl durchfuhr unseren Helden. Danach
+  nur noch schwarz...
+
+> Als $plyName$ wieder zu sich kam, stand - eine Fratze
+  reizend - der Gnom über ihm.
+
+$clear$
+> "die Zeit der Wahrheit ist gekommen
+   dein Mut wird alsbald sein zeronnen
+   Schwere zieht dein Herz danieder
+   bleiern werden deine Glieder
+   die kommende aufgabe ist nicht leicht
+   es wird sich zeigen ob dein koennen reicht"
+
+> "Mach dich gefasst: Das Raetsel ist das folgende...
+   hahahahaha!"
+
+$showTask$
+> "Niemals wirst du das loesen..hahahah", schrie der Gnom.
+
+$clear$
+> Hast du das Raetsel geloest, so vergleiche deine Bemuehungen
+mit der folgenden Musterloesung.
+
+$showSolution$
+
+------------------------------------------------------------------------------
+> Denkst du, deine Loesung ist korrekt, so druecke J,
+denkst du, sie ist falsch, so druecke N.
+
+$isCorrect$

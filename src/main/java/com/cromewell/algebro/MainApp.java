@@ -28,7 +28,7 @@ import java.util.List;
 public class MainApp extends Application {
 
     static Player ply = new Player();
-    static final List<Integer> EXISTING_LEVELS = Arrays.asList(1, 2);
+    static final List<Integer> EXISTING_LEVELS = Arrays.asList(1, 2, 3);
     private Console console;
     private TextField input;
     private boolean continueWriting = true;
@@ -109,7 +109,11 @@ public class MainApp extends Application {
         stage.show();
 
         //start game
-        startIntro();
+        startGame();
+    }
+
+    private void startGame() {
+        initLevel("menu");
     }
 
     //skip for skipping lines
@@ -142,10 +146,16 @@ public class MainApp extends Application {
             line = line.replaceAll("\\$plyName\\$", ply.getName());
         }
 
-        if(line.equals(Keywords.END)){
+        if (line.equals(Keywords.END)) {
             return "$break$";
         }
 
+        if (line.startsWith(Keywords.START)) {
+            String toBeLoaded = line.substring(Keywords.START.length());
+            initLevel(toBeLoaded);
+        }
+
+        //following if statement handles menu input
         if (line.equals(Keywords.EVALUATE_INPUT)) {
             if (currentLvl.equals("menu")) {
                 switch (lastInputText) {
@@ -161,6 +171,9 @@ public class MainApp extends Application {
                         linesToSkip = 29;
                         startLevel(currentLvl, linesToSkip);
                         return "$break$";
+                    case "n":
+                        initLevel("intro");
+                        return "$break$";
                     default:
                         console.clear();
                         console.printLine(">> Eingabe nicht valide!");
@@ -174,10 +187,10 @@ public class MainApp extends Application {
         if (line.equals(Keywords.SET_TEXT_SPEED)) {
             line = "";
             int speed;
-            try{
+            try {
                 speed = Integer.parseInt(lastInputText);
-            } catch (NumberFormatException nfe){
-                console.printLine("Eingabe ungültig. Setze Textgeschwindigkeit zu DEFAULT ("+Writer.DEFAULT_TEXT_SPEED+").");
+            } catch (NumberFormatException nfe) {
+                console.printLine("Eingabe ungültig. Setze Textgeschwindigkeit zu DEFAULT (" + Writer.DEFAULT_TEXT_SPEED + ").");
                 speed = Writer.DEFAULT_TEXT_SPEED;
             }
             console.getWriter().setTextSpeed(speed);
@@ -197,6 +210,7 @@ public class MainApp extends Application {
         }
 
         if (line.equals(Keywords.SHOW_SOLUTION)) {
+            System.out.println(lvl);
             try (InputStream is = MainApp.class.getClassLoader().getResourceAsStream("solutions/sol_" + lvl + ".pdf")) {
                 Path tempOutput = Files.createTempFile("temp_sol", ".pdf");
                 tempOutput.toFile().deleteOnExit();
@@ -357,9 +371,5 @@ public class MainApp extends Application {
         readLines = 0;
         linesToSkip = 0;
         startLevel(currentLvl, linesToSkip);
-    }
-
-    private void startIntro() {
-        initLevel("intro");
     }
 }
